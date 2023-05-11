@@ -24,7 +24,7 @@
                     </span>
                     <span>({{estd.rating}})</span>
                     <p class="card-text">{{ estd.description }}</p>
-                    <a href="#" class="btn btn-primary">Visit</a>
+                    <a href="{% url 'establishment' estd.type estd.id %}" class="btn btn-primary">Visit</a>
                     </div>
                 </div>
             {% endfor %}

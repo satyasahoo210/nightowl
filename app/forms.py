@@ -6,7 +6,6 @@ from .models import User
 class Register(forms.ModelForm):
     first_name = forms.CharField(required=True, help_text="Enter your First Name")
     last_name = forms.CharField(required=True)
-    # email = forms.EmailField(required=True, validators=[validators.EmailValidator])
     age = forms.IntegerField(min_value=16, required=True)
     phone = forms.CharField(
         validators=[
@@ -96,3 +95,25 @@ class ChangePwd(forms.Form):
                     "cnf_password": "password and confirm_password does not match",
                 }
             )
+
+class ProfileEditForm(forms.ModelForm):
+    age = forms.IntegerField(min_value=16)
+    phone = forms.CharField(
+        validators=[
+            validators.RegexValidator(
+                regex=r"[\d\+ ]{10,15}", message="Enter a valid phone number"
+            )
+        ]
+    )
+    
+
+    class Meta:
+        model = User
+        fields = [
+            "first_name",
+            "last_name",
+            "email",
+            "age",
+            "address",
+            "phone"
+        ]
