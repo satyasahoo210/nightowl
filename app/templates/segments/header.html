@@ -1,0 +1,41 @@
+<header class="navbar navbar-expand-lg bd-navbar bg-primary sticky-top">
+  <nav class="container-xxl bd-gutter flex-wrap flex-lg-nowrap">
+      <!-- <div class="container-fluid"> -->
+        <a class="navbar-brand" href="#">NightOwl</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
+          <ul class="navbar-nav mb-2 mb-lg-0">
+            {% if user.is_authenticated %}
+              <li class="nav-item dropdown">
+                <a class="nav-link" href="#" id="user-menu-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  {% if user.dp|length > 1 %}
+                    <div class="dp" style="background-image: url({{user.dp}});"></div>
+                  {% else %}
+                    <div class="dp">{{user.dp}}</div>
+                  {% endif %}
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="user-menu-dropdown">
+                  <li><a class="dropdown-item disabled"> {{user.get_full_name}} </a></li>
+                  <li><a class="dropdown-item" href="{% url 'profile' user %}">Profile</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a href="{% url 'login' %}" class="btn btn-outline-light">Log In</a>
+                <a href="{% url 'register' %}" class="btn btn-success">Register</a>
+              </li>
+            {% endif %}
+          </ul>
+          <!-- <form class="d-flex">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form> -->
+        </div>
+      <!-- </div> -->
+  </nav>
+</header>

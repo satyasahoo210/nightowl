@@ -1,0 +1,65 @@
+body {
+    height: 100vh;
+}
+
+.alert {
+    position: absolute;
+    bottom: 60px;
+    right: 0;
+    z-index: 10000;
+}
+
+main {
+    min-height: calc(100vh - 130px);
+    display: flex;
+    flex-direction: column;
+}
+
+
+.form-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-container fieldset {
+    width: 70%;
+    height: fit-content;
+    padding: 1em;
+
+    box-shadow: 0 0 10px -5px var(--bs-gray-700);
+    border-radius: 10px;
+    border: 1px solid var(--bs-gray-900);
+}
+
+.estd-container {
+    display: flex;
+    gap: 1em;
+    flex-wrap: wrap;
+}
+
+.rating i.fas {
+    color: #ffff00;
+}
+
+.dp {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.gradient-custom {
+    /* fallback for old browsers */
+    background: rgba(101, 174, 246, 1);
+
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right bottom, rgba(101, 174, 246, 1), rgba(0, 62, 164, 1));
+
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to right bottom, #65aef6, #003ea4);
+}

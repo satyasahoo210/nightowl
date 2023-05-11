@@ -1,0 +1,18 @@
+{% extends "segments/base.html" %}
+{% load django_bootstrap5 %}
+
+{% block title %} Register {% endblock %}
+
+{% block body %}
+<div class="form-container">
+    <fieldset>
+        <legend>Register</legend>
+        <form method="post" class="form">
+            {% bootstrap_form form %}
+
+            {% bootstrap_button button_type="submit" content="Register" extra_classes="float-end" %}
+            {% csrf_token %}
+        </form>
+    </fieldset>
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "segments/base.html" %}
+{% load rating %}
+
+{% block title %} Home {% endblock %}
+
+{% block body %}
+    <div class="mt-5">
+    {% regroup establishments by get_type_display as establishment_list %}
+    {% for establishment in establishment_list %}
+        <div class="border-bottom mb-2 pb-1">{{ establishment.grouper }}</div>
+        <div class="estd-container">
+            {% for estd in establishment.list %}
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                    <h5 class="card-title">{{ estd.name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        {{ estd.get_type_display }}
+                    </h6>
+                    <span class="rating">
+                        {% to_rating estd.rating as classes %}
+                        {% for cls in classes %}
+                            <i class="fas {{cls}}"></i>
+                        {% endfor %}
+                    </span>
+                    <span>({{estd.rating}})</span>
+                    <p class="card-text">{{ estd.description }}</p>
+                    <a href="#" class="btn btn-primary">Visit</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+    </div>
+{% endblock %}
