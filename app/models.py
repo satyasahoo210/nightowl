@@ -26,7 +26,7 @@ class User(AbstractUser):
         if self._dp:
             return reverse("profile_picture", kwargs={"username": self.username})
         else:
-            return self.first_name[0].upper()
+            return (self.first_name or self.username)[0].upper()
 
 
 class Establishment(models.Model):

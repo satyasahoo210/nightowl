@@ -81,7 +81,7 @@ def login(request: HttpRequest):
                 django_login(request, user)
                 return redirect(url)
             else:
-                messages.error(request, "Usernamer/Password might be wrong")
+                messages.error(request, "Username/Password might be wrong")
 
         context = {"form": login_form}
         return render(request, "user/login.html", context)
