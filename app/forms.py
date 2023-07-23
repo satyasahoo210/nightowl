@@ -1,6 +1,6 @@
 from django import forms
 from django.core import validators
-from .models import User
+from .models import User, Review, Photo, Establishment
 
 
 class Register(forms.ModelForm):
@@ -106,7 +106,6 @@ class ProfileEditForm(forms.ModelForm):
         ]
     )
     
-
     class Meta:
         model = User
         fields = [
@@ -115,5 +114,39 @@ class ProfileEditForm(forms.ModelForm):
             "email",
             "age",
             "address",
-            "phone"
+            "phone",
+            "_dp"
+        ]
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = [
+            "rating",
+            "review",
+        ]
+
+
+class PhotoForm(forms.ModelForm):
+    # path = forms.ImageField(label='')
+    class Meta:
+        model = Photo
+        fields = [
+            "path",
+        ]
+
+class EstablishmentForm(forms.ModelForm):
+    class Meta:
+        model = Establishment
+        fields = [
+            'name',
+            'description',
+            'address1',
+            'address2',
+            'street',
+            'district',
+            'state',
+            'pin',
+            'type',
+            'contact'
         ]

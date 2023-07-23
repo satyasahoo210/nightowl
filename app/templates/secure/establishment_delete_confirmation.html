@@ -1,0 +1,14 @@
+{% extends "segments/base.html" %}
+{% load django_bootstrap5 %}
+
+{% block title %} Delete Establishment {% endblock %}
+
+{% block body %}
+    <form method="post" class="form">
+        <h1>Do you really want to delete "{{estd.name}}" ?</h1>
+
+        {% bootstrap_button button_type="submit" content="Yes" extra_classes="float-end btn-danger" %}
+        <a href="{% url 'establishment' estd.type estd.id %}" class="btn btn-outline-primary float-end mx-2">No</a>
+        {% csrf_token %}
+    </form>
+{% endblock %}

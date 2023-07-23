@@ -1,4 +1,6 @@
+from django.forms.models import BaseModelForm
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.http import HttpResponse, HttpRequest
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -7,11 +9,22 @@ from django.contrib.auth import (
     login as django_login,
     logout as django_logout,
 )
+from django.views.generic import DetailView
+from django.views.generic.edit import FormMixin, CreateView, DeleteView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 import logging
 
-from .models import User, Establishment
-from .forms import Register, Login, ChangePwd, ProfileEditForm
+from .models import User, Establishment, Review, Photo
+from .forms import (
+    Register,
+    Login,
+    ChangePwd,
+    ProfileEditForm,
+    ReviewForm,
+    PhotoForm,
+    EstablishmentForm,
+)
 
 from PIL import Image
 
@@ -22,7 +35,9 @@ def index(request: HttpRequest):
         establishments = Establishment.objects.filter(active=True).order_by(
             "type", "-rating"
         )
-        return render(request, "secure/home.html", context={"establishments": establishments})
+        return render(
+            request, "secure/home.html", context={"establishments": establishments}
+        )
     else:
         return render(request, "index.html")
 
@@ -123,7 +138,7 @@ def profile_edit(request: HttpRequest):
         "email": request.user.email,
         "age": request.user.age,
         "address": request.user.address,
-        "phone": request.user.phone
+        "phone": request.user.phone,
     }
     if request.method == "GET":
         profile_edit_form = ProfileEditForm(initial=initial)
@@ -143,4 +158,103 @@ def profile_edit(request: HttpRequest):
 
 def establishment(request: HttpRequest, type: str, pk: int):
     estd = get_object_or_404(Establishment, type=type, id=pk)
-    return render(request, "establishment.html", context={"estd": estd})
+    reviews = Review.objects.filter(establishment=estd, active=True)
+    photos = map(lambda _p: reverse('estd_image', kwargs={"id": _p.id, "type": type, "pk": pk}), Photo.objects.filter(establishment=estd, active=True))
+
+    context = {"estd": estd, "reviews": reviews, "photos": photos}
+    return render(request, "secure/establishment.html", context=context)
+
+def estd_image(request: HttpRequest, id: int, type: str, pk: int):
+    path = Photo.objects.get(id=id).path.path
+    try:
+        with open(path, "rb") as f:
+            return HttpResponse(f.read(), content_type="image/jpeg")
+    except Exception:
+        red = Image.new("RGB", (50, 50), (255, 0, 0))
+        response = HttpResponse(content_type="image/jpeg")
+        red.save(response, "JPEG")
+        return response
+
+# class EstablishmentDetailView(FormMixin, DetailView):
+#     model = Establishment
+#     context_object_name = 'estd'
+#     template_name = 'establishment.html'
+
+#     form_class = ReviewForm
+
+
+class EstablishmentCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    model = Establishment
+    template_name = "secure/establishment_create.html"
+    form_class = EstablishmentForm
+    login_url = "/login"
+    success_url = "/"
+
+    permission_required = "app.establishment.can_create"
+
+
+class EstablishmentUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    model = Establishment
+    template_name = "secure/establishment_create.html"
+    form_class = EstablishmentForm
+    login_url = "/login"
+    success_url = "/"
+
+    permission_required = "app.establishment.can_create"
+
+
+class EstablishmentDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    model = Establishment
+    context_object_name = "estd"
+    template_name = "secure/establishment_delete_confirmation.html"
+    login_url = "/login"
+    success_url = "/"
+
+    permission_required = "app.establishment.can_delete"
+
+
+class ReviewCreateView(LoginRequiredMixin, CreateView):
+    model = Review
+    template_name = "secure/review.html"
+    form_class = ReviewForm
+    login_url = "/login"
+
+    def get_success_url(self):
+        return reverse(
+            "establishment",
+            kwargs={
+                "pk": self.object.establishment.id,
+                "type": self.object.establishment.type,
+            },
+        )
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        form.instance.user = self.request.user
+        form.instance.establishment = Establishment.objects.get(
+            id=self.kwargs.get("pk")
+        )
+        return super().form_valid(form)
+
+
+class AddPhotoView(LoginRequiredMixin, CreateView):
+    model = Photo
+    template_name = "secure/photo.html"
+    form_class = PhotoForm
+    login_url = "/login"
+
+    def get_success_url(self):
+        return reverse(
+            "establishment",
+            kwargs={
+                "pk": self.object.establishment.id,
+                "type": self.object.establishment.type,
+            },
+        )
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        form.instance.user = self.request.user
+        form.instance.establishment = Establishment.objects.get(
+            id=self.kwargs.get("pk")
+        )
+        return super().form_valid(form)
+

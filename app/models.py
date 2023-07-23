@@ -50,6 +50,23 @@ class Establishment(models.Model):
 
     def __str__(self) -> str:
         return self.name
+    
+    def get_address(self) -> str:
+        addr = ', '.join((
+            self.address1,
+            self.address2,
+            self.street,
+            self.district,
+            self.state
+        ))
+
+        full_addr = ' - '.join((addr, self.pin))
+
+        return full_addr
+    
+    def calculated_rating(self):
+        return int(Review.objects.filter(establishment = self, active=True).aggregate(models.Avg('rating')).get('rating__avg', 0) or 0)
+        
 
 
 class Review(models.Model):

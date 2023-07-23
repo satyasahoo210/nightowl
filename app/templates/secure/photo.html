@@ -1,0 +1,16 @@
+{% extends "segments/base.html" %}
+{% load django_bootstrap5 %}
+
+{% block title %} Photo | {{estd.name}} {% endblock %}
+
+{% block body %}
+<fieldset class="add-photo container mt-2">
+    <legend>Photo</legend>
+    <form method="post" class="form" enctype="multipart/form-data">
+        {% bootstrap_form form %}
+
+        {% bootstrap_button button_type="submit" content="Add Photo" extra_classes="float-end" %}
+        {% csrf_token %}
+    </form>
+</fieldset>
+{% endblock %}

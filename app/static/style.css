@@ -63,3 +63,13 @@ main {
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     background: linear-gradient(to right bottom, #65aef6, #003ea4);
 }
+
+.gallery {
+    display: flex;
+    gap: 1em;
+    flex-wrap: wrap;
+}
+
+.gallery img {
+    height: 150px;
+}

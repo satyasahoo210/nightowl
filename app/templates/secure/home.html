@@ -16,13 +16,15 @@
                     <h6 class="card-subtitle mb-2 text-muted">
                         {{ estd.get_type_display }}
                     </h6>
-                    <span class="rating">
-                        {% to_rating estd.rating as classes %}
-                        {% for cls in classes %}
-                            <i class="fas {{cls}}"></i>
-                        {% endfor %}
-                    </span>
-                    <span>({{estd.rating}})</span>
+                    {% if estd.calculated_rating %}
+                        <span class="rating">
+                            {% to_rating estd.calculated_rating as classes %}
+                            {% for cls in classes %}
+                                <i class="fas {{cls}}"></i>
+                            {% endfor %}
+                        </span>
+                        <span>({{estd.calculated_rating}})</span>
+                    {% endif %}
                     <p class="card-text">{{ estd.description }}</p>
                     <a href="{% url 'establishment' estd.type estd.id %}" class="btn btn-primary">Visit</a>
                     </div>

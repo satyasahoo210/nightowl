@@ -1,0 +1,65 @@
+{% extends "segments/base.html" %}
+{% load django_bootstrap5 %}
+{% load rating %}
+
+{% block title %} {{estd.get_type_display}} | {{estd.name}} {% endblock %}
+
+{% block body %}
+    <div class="card">
+        <img 
+            src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2FmZXxlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80" 
+            class="card-img-top" 
+            alt="{{estd.name}}"
+            style="height: 300px;"
+            >
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <h5 class="card-title">{{estd.name}} • {{estd.get_type_display}}</h5>
+                    <p class="card-text">{{estd.description}}</p>   
+                </div>
+                {% if user.is_staff %}
+                <div>
+                    <a href="{% url 'establishment.update' estd.id %}" class="btn btn-info">Update</a>
+                    <a href="{% url 'establishment.delete' estd.type estd.id %}" class="btn btn-danger">Delete</a>
+                </div>
+                {% endif %}
+            </div>
+            <hr />
+            <p>
+                <i class="fa fa-address-card"></i> <span>{{estd.get_address}}</span>
+            </p>
+            <p>
+                <i class="fa fa-phone-alt"></i> <a href="tel:{{estd.contact}}">{{estd.contact}}</a>
+            </p>
+        </div>
+    </div>
+
+    <div class="mt-5">
+        <a href="{% url 'review.new' estd.id %}" class="btn btn-primary">Add Review</a>
+        <a href="{% url 'photo.new' estd.id %}" class="btn btn-primary">Add Photo</a>
+    </div>
+
+    <div class="gallery mt-5">
+        {% for photo in photos %}
+            <img src="{{photo}}" alt="" class="img-thumbnail rounded">
+        {% endfor %}
+    </div>
+
+    <div class="reviews mt-5">
+        {% for review in reviews %}
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{review.user.get_full_name}} | {% to_rating review.establishment.calculated_rating as classes %}
+                        <span class="rating">
+                            {% for cls in classes %}
+                                <i class="fas {{cls}}"></i>
+                            {% endfor %}
+                        </span>
+                    </h5>
+                    <p class="card-text">{{review.review}}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
